@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Memory extends Model
 {
+    protected $fillable = [
+        'content',
+    ];
+
     public function relationship(): BelongsTo
     {
         return $this->belongsTo(Relationship::class);

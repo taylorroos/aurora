@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Interaction extends Model
 {
+    protected $fillable = [
+        'person_id',
+        'type',
+        'content',
+    ];
+
     public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class);

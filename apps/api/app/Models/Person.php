@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Person extends Model
 {
+    protected $guarded = [];
+    
     public function profile(): HasOne
     {
         return $this->hasOne(Profile::class);
