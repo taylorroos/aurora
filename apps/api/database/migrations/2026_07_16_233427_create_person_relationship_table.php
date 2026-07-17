@@ -12,20 +12,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('person_relationship', function (Blueprint $table) {
-            $table->foreignId('person_id')
-                ->constrained('people')
-                ->cascadeOnDelete();
+        $table->id();
 
-            $table->foreignId('relationship_id')
-                ->constrained()
-                ->cascadeOnDelete();
+        $table->foreignId('person_id')
+            ->constrained('people')
+            ->cascadeOnDelete();
 
-            $table->string('role')->nullable();
+        $table->foreignId('relationship_id')
+            ->constrained()
+            ->cascadeOnDelete();
 
-            $table->timestamps();
+        $table->string('role')->nullable();
 
-            $table->unique(['person_id', 'relationship_id']);
-        });
+        $table->timestamps();
+
+        $table->unique(['person_id', 'relationship_id']);
+    });
     }
 
     /**
