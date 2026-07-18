@@ -1,18 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
+import ChatInput from '@/components/chat/ChatInput.vue'
 import ChatMessage from '@/components/chat/ChatMessage.vue'
 
-import type { ChatMessage as ChatMessageType } from '@/types/chat'
+import { useChat } from '@/composables/useChat'
 
-const messages = ref<ChatMessageType[]>([
-  {
-    id: crypto.randomUUID(),
-    role: 'assistant',
-    content: 'Olá! Eu sou a Aurora. Como posso ajudar você hoje?',
-    createdAt: new Date(),
-  },
-])
+const { messages, sendMessage } = useChat()
 </script>
 
 <template>
@@ -22,6 +14,8 @@ const messages = ref<ChatMessageType[]>([
       :key="message.id"
       :message="message"
     />
+
+    <ChatInput @send="sendMessage" />
   </div>
 </template>
 
