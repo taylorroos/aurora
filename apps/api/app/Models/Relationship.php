@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Relationship extends Model
 {
-    protected $fillable = [];
+    protected $fillable = [
+        'type',
+        'status',
+    ];
     
     public function people(): BelongsToMany
     {
