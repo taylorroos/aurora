@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\RelationshipController;
+use App\Http\Controllers\ChatController;
 
 Route::get('/health', function () {
     return response()->json([
@@ -11,6 +12,8 @@ Route::get('/health', function () {
         'version' => '0.1.0',
     ]);
 });
+
+Route::post('/chat', ChatController::class);
 
 Route::apiResource('relationships', RelationshipController::class);
 

@@ -1,7 +1,24 @@
-export async function sendMessage(message: string) {
-  console.log(message)
+import { env } from '@/config/env'
 
-  return {
-    reply: 'Em breve a Aurora responderá aqui.'
+const API_URL = env.apiUrl
+
+interface ChatResponse {
+  message: string
+}
+
+export async function sendMessage(message: string): Promise<ChatResponse> {
+  const response = await fetch(`${API_URL}/chat`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({ message }),
+  })
+
+  if (!response.ok) {
+    throw new Error('Erro ao enviar mensagem.')
   }
+
+  return response.json()
 }

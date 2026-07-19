@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 
 import type { ChatMessage } from '@/types/chat'
+import { sendMessage as sendMessageToApi } from '@/services/aurora'
 
 const messages = ref<ChatMessage[]>([
   {
@@ -11,7 +12,7 @@ const messages = ref<ChatMessage[]>([
   },
 ])
 
-function sendMessage(content: string) {
+async function sendMessage(content: string) {
   messages.value.push({
     id: crypto.randomUUID(),
     role: 'user',
@@ -19,14 +20,25 @@ function sendMessage(content: string) {
     createdAt: new Date(),
   })
 
-  setTimeout(() => {
+  try {
+    const response = await sendMessageToApi(content)
+
     messages.value.push({
       id: crypto.randomUUID(),
       role: 'assistant',
-      content: 'Ainda estou aprendendo. Em breve poderei conversar com você de verdade.',
+      content: response.message,
       createdAt: new Date(),
     })
-  }, 1000)
+  } catch (error) {
+    messages.value.push({
+      id: crypto.randomUUID(),
+      role: 'assistant',
+      content: 'Ocorreu um erro ao conversar com a Aurora.',
+      createdAt: new Date(),
+    })
+
+    console.error(error)
+  }
 }
 
 export function useChat() {
