@@ -12,38 +12,51 @@ const messages = ref<ChatMessage[]>([
   },
 ])
 
+const isLoading = ref(false)
+
 async function sendMessage(content: string) {
-  messages.value.push({
-    id: crypto.randomUUID(),
-    role: 'user',
-    content,
-    createdAt: new Date(),
-  })
-
-  try {
-    const response = await sendMessageToApi(content)
-
+    if (isLoading.value) {
+        return
+    }
     messages.value.push({
-      id: crypto.randomUUID(),
-      role: 'assistant',
-      content: response.message,
-      createdAt: new Date(),
-    })
-  } catch (error) {
-    messages.value.push({
-      id: crypto.randomUUID(),
-      role: 'assistant',
-      content: 'Ocorreu um erro ao conversar com a Aurora.',
-      createdAt: new Date(),
+        id: crypto.randomUUID(),
+        role: 'user',
+        content,
+        createdAt: new Date(),
     })
 
-    console.error(error)
-  }
+    isLoading.value = true
+
+    // aguarda para testar o loading
+    // await new Promise(resolve => setTimeout(resolve, 1000))
+
+    try {
+        const response = await sendMessageToApi(content)
+
+        messages.value.push({
+            id: crypto.randomUUID(),
+            role: 'assistant',
+            content: response.message,
+            createdAt: new Date(),
+        })
+    } catch (error) {
+        messages.value.push({
+            id: crypto.randomUUID(),
+            role: 'assistant',
+            content: 'Ocorreu um erro ao conversar com a Aurora.',
+            createdAt: new Date(),
+        })
+
+        console.error(error)
+    } finally {
+        isLoading.value = false
+    }
 }
 
 export function useChat() {
   return {
     messages,
+    isLoading,
     sendMessage,
   }
 }

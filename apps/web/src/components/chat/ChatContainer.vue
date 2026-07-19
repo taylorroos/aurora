@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import ChatInput from '@/components/chat/ChatInput.vue'
 import ChatMessage from '@/components/chat/ChatMessage.vue'
+import TypingIndicator from './TypingIndicator.vue'
 import { nextTick, ref, watch } from 'vue'
 
 import { useChat } from '@/composables/useChat'
 
-const { messages, sendMessage } = useChat()
+const {
+    messages,
+    isLoading,
+    sendMessage,
+} = useChat()
 
 const messagesContainer = ref<HTMLElement | null>(null)
 
@@ -19,33 +24,43 @@ async function scrollToBottom() {
 }
 
 watch(
-  () => messages.value.length,
-  scrollToBottom,
+  isLoading,
+  (loading) => {
+    if (loading) {
+      scrollToBottom()
+    }
+  },
 )
 </script>
 
 <template>
   <div class="chat-container">
-
     <header class="chat-header">
       <h1>Aurora</h1>
     </header>
 
-    <main
-        ref="messagesContainer"
-        class="chat-messages"
+    <div
+      ref="messagesContainer"
+      class="chat-messages"
     >
       <ChatMessage
         v-for="message in messages"
         :key="message.id"
         :message="message"
       />
-    </main>
+
+      <TypingIndicator
+        v-if="isLoading"
+        author="Aurora"
+      />
+    </div>
 
     <footer class="chat-footer">
-      <ChatInput @send="sendMessage" />
+      <ChatInput
+        :loading="isLoading"
+        @send="sendMessage"
+      />
     </footer>
-
   </div>
 </template>
 

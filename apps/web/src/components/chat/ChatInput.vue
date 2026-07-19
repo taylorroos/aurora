@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { nextTick, ref, watch, onMounted } from 'vue'
+
+const inputRef = ref<HTMLInputElement | null>(null)
 
 const emit = defineEmits<{
   send: [message: string]
@@ -7,30 +9,59 @@ const emit = defineEmits<{
 
 const message = ref('')
 
+const props = defineProps<{
+    loading: boolean
+}>()
+
 function handleSend() {
-  const text = message.value.trim()
+    if (props.loading) return
 
-  if (!text) return
+    const text = message.value.trim()
 
-  emit('send', text)
+    if (!text) return
 
-  message.value = ''
+    emit('send', text)
+
+    message.value = ''
 }
+
+onMounted(() => {
+    inputRef.value?.focus()
+})
+
+watch(
+    () => props.loading,
+    async (loading) => {
+        if (!loading) {
+            await nextTick()
+            inputRef.value?.focus()
+        }
+    },
+)
 </script>
 
 <template>
-  <div class="chat-input">
+  <form
+    class="chat-input"
+    @submit.prevent="handleSend"
+  >
     <input
+      ref="inputRef"
       v-model="message"
+      :disabled="loading"
       type="text"
       placeholder="Digite sua mensagem..."
-      @keyup.enter="handleSend"
     />
 
-    <button @click="handleSend">
-      Enviar
+    <button
+      type="submit"
+      :disabled="loading"
+      :class="{ loading }"
+    >
+      <span v-if="loading">Enviando...</span>
+      <span v-else>Enviar</span>
     </button>
-  </div>
+  </form>
 </template>
 
 <style scoped>
@@ -76,5 +107,10 @@ button {
 
 button:hover {
   background: var(--color-primary-hover);
+}
+
+button.loading {
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 </style>
