@@ -36,15 +36,45 @@ function handleSend() {
 <style scoped>
 .chat-input {
   display: flex;
-  gap: 1rem;
+  gap: var(--space-md);
+  align-items: center;
 }
 
 input {
   flex: 1;
-  padding: .75rem;
+
+  padding: 0.9rem 1rem;
+
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+
+  outline: none;
+
+  font-size: 1rem;
+
+  transition: border-color .2s ease;
+}
+
+input:focus {
+  border-color: var(--color-primary);
 }
 
 button {
-  padding: .75rem 1rem;
+  border: none;
+
+  border-radius: 999px;
+
+  padding: 0.9rem 1.4rem;
+
+  cursor: pointer;
+
+  background: var(--color-primary);
+  color: white;
+
+  transition: .2s;
+}
+
+button:hover {
+  background: var(--color-primary-hover);
 }
 </style>
