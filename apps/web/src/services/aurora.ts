@@ -1,24 +1,13 @@
-import { env } from '@/config/env'
-
-const API_URL = env.apiUrl
+import { http } from './http'
 
 interface ChatResponse {
   message: string
 }
 
 export async function sendMessage(message: string): Promise<ChatResponse> {
-  const response = await fetch(`${API_URL}/chat`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify({ message }),
+  const { data } = await http.post<ChatResponse>('/chat', {
+    message,
   })
 
-  if (!response.ok) {
-    throw new Error('Erro ao enviar mensagem.')
-  }
-
-  return response.json()
+  return data
 }
